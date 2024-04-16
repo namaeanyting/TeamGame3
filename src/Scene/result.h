@@ -24,7 +24,6 @@ public:
 
 	SceneResult();
 	~SceneResult();
-	//Sound sound;
 	//‰Šú‰»
 	void Init();
 

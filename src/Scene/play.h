@@ -24,9 +24,6 @@ public:
 	ScenePlay();
 	~ScenePlay();
 
-	//Sound sound;
-	//Score score;
-
 	//‰Šú‰»
 	void Init();
 

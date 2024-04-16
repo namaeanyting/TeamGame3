@@ -23,8 +23,6 @@ public:
 	SceneTitle();
 	~SceneTitle();
 
-	//Sound sound;
-
 	//‰Šú‰»
 	void Init();
 
