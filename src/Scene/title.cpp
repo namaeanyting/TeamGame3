@@ -20,7 +20,7 @@ void SceneTitle::Init()
 	}
 	
 	//ƒL[‚Ì‰Šú‰»
-	Input::Init();
+	//Input::Init();
 
 	//BGM
 	//sound.bgm[BGM_OP] = LoadSoundMem("data/Sound/title.mp3");//OP

@@ -1,4 +1,6 @@
 #pragma once
+#include "../Player/player.h"
+#include "../Enemy/enemy.h"
 
 //画像を使うときの名前
 enum PLAY_IMAGE
@@ -24,6 +26,9 @@ public:
 	ScenePlay();
 	~ScenePlay();
 
+	Player player;
+	Enemy enemy[ENEMY_KAIND];
+
 	//初期化
 	void Init();
 
@@ -35,5 +40,6 @@ public:
 
 	//終了処理
 	void Fin();
-	
+	//プレイヤーと敵当たり判定
+	void PlyerToEnemyHit();
 };

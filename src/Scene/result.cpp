@@ -14,7 +14,7 @@ void SceneResult::Init()
 		imgHandl[i] = LoadGraph(RESULT_IMAGE_PATH[i]);
 	}
 	//ƒL[‚Ì‰Šú‰»
-	Input::Init();
+	//Input::Init();
 
 	//BGM
 	//sound.bgm[BGM_ED] = LoadSoundMem("data/Sound/resulr.mp3");//OP
