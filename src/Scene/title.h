@@ -11,13 +11,17 @@ enum TITLE_IMAGE
 //画像のパス
 const char TITLE_IMAGE_PATH[TITLE_IMEG_MAX][255] =
 {
-	"data/title/1.png",			//タイトル背景画像
+	"data/title/Title.png",			//タイトル背景画像
+	
 };
+
+#define TITLE_NAME_PATH			"data/title/TitleName.png"
 
 class SceneTitle
 {
 private:
 	int imgHandl[TITLE_IMEG_MAX];	//画像ハンドル
+	int nameHandl;
 public:
 
 	SceneTitle();

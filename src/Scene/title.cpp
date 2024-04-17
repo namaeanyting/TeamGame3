@@ -18,6 +18,8 @@ void SceneTitle::Init()
 	{
 		imgHandl[i] = LoadGraph(TITLE_IMAGE_PATH[i]);
 	}
+
+	nameHandl = LoadGraph(TITLE_NAME_PATH);
 	
 	//キーの初期化
 	//Input::Init();
@@ -49,6 +51,7 @@ void SceneTitle::Step()
 void SceneTitle::Draw()
 {
 	DrawGraph(0, 0, imgHandl[TITLE_BACK], true);
+	DrawRotaGraph(650, 100, 1.5f, 0.0f, nameHandl, true);
 }
 
 // タイトル終了処理
