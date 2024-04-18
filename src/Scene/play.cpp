@@ -33,12 +33,33 @@ void ScenePlay::Init()
 	{
 		enemy[i].Init();
 	}
+	flameCount = 0;
+
+	//左から進行
+	enemy[0].x = 0;
+	enemy[0].y = 360;
+	enemy[0].isLeft = true;
+	enemy[0].isActive = true;
+
+	//右から進行
+	enemy[1].x = 1280;
+	enemy[1].y = 360;
+	enemy[1].isLeft = false;
+	enemy[1].isActive = true;
+
+	//右から進行
+	enemy[2].x = 1280;
+	enemy[2].y = 360;
+	enemy[2].isLeft = false;
+	enemy[2].isActive = false;
 	//通常処理へ移動
 	g_CurrentSceneID = SCENE_ID_LOOP_PLAY;
 }
 // タイトル通常処理
 void ScenePlay::Step()
 {
+	flameCount++;
+
 	for (int i = 0; i < 4; i++) {
 		player.direction[i] = false;
 	}
@@ -55,11 +76,30 @@ void ScenePlay::Step()
 		enemy[i].Step();
 	}
 
+	if (flameCount >= 60) {
+		for (int i = 0; i < ENEMY_KAIND; i++)
+		{
+			if (!enemy[i].isActive) {
+				if (enemy[i].isLeft) {
+					enemy[i].x = 0;
+					enemy[i].y = 360;
+				}
+				else {
+					enemy[i].x = 1280;
+					enemy[i].y = 360;
+				}
+
+				enemy[i].isActive = true;
+				flameCount = 0;
+			}
+		}
+	}
+
 	////DO
 	//for (int i = 0; i < ENEMY_KAIND; i++)
 	//{
-	//	if (enemy[i].enemyInfo[i].HP < 0) {
-	//		enemy[i].enemyInfo[i].HP = 0;
+	//	if (enemy[i].HP < 0) {
+	//		enemy[i].HP = 0;
 	//	}
 	//}
 	if (player.HP < 0) {
@@ -92,6 +132,8 @@ void ScenePlay::Draw()
 	}
 
 	//デバッグ用
+	DrawFormatString(0, 0, GetColor(255, 255, 255), "flame:%d", flameCount);
+
 	/*DrawFormatString(0, 40, GetColor(255, 255, 255), "playerHP:%d",player.HP);
 	for (int i = 0; i < ENEMY_KAIND; i++)
 	{

@@ -28,26 +28,26 @@ const char ENEMY_IMAGE_PATH[ENEMY_IMEG_MAX][255] =
 	"data/play/3.png",			//ƒ^ƒCƒgƒ‹”wŒi‰æ‘œ
 	"data/play/4.png",			//ƒ^ƒCƒgƒ‹”wŒi‰æ‘œ
 };
-//struct EnemyInfo
-//{
-//	int x, y;
-//	int HP;
-//	bool direction[2];			//“G‚ªŒü‚¢‚Ä‚¢‚é•ûŒü
-//	bool isDraw;				//HP‚ª‚O‚É‚È‚Á‚½‚ç•`‰æ‚ğ‚â‚ß‚é
-//	int imgHandl[ENEMY_IMEG_MAX];
-//
-//};
+struct EnmemyInfo
+{
+	
+};
 
 class Enemy
 {
 private:
-	//EnemyInfo enemyInfo[ENEMY_MAX_NUM] = { 0 };
-	int x, y;
-	int HP;
 	bool direction[2];			//“G‚ªŒü‚¢‚Ä‚¢‚é•ûŒü
-	bool isDraw;				//HP‚ª‚O‚É‚È‚Á‚½‚ç•`‰æ‚ğ‚â‚ß‚é
 	int imgHandl[ENEMY_IMEG_MAX];
+	int enemyNum[3];			//“G‚Ìí—Ş
+
+	
 public:
+	int HP;
+	int x, y;
+	bool isActive;
+	bool isLeft;				//true=¶‚©‚ç—ˆ‚é
+
+	int flameCount;
 	//‰Šú‰»
 	void Init();
 
@@ -61,9 +61,5 @@ public:
 
 	//I—¹ˆ—
 	void Fin();
-	
-	//À•Wæ“¾
-	//int GetPosX(int num) { return enemyInfo[num].x; }
-	//int GetPosY(int num) { return enemyInfo[num].y; }
 
 };

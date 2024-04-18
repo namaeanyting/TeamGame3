@@ -29,6 +29,7 @@ public:
 	Player player;
 	Enemy enemy[ENEMY_KAIND];
 
+	int flameCount;
 	//‰Šú‰»
 	void Init();
 
