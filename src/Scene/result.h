@@ -12,7 +12,7 @@ enum RESULT_IMAGE
 //画像のパス
 const char RESULT_IMAGE_PATH[RESULT_IMEG_MAX][255] =
 {
-	"data/result/3.png",			//タイトル背景画像
+	"data/result/Result.png",			//タイトル背景画像
 };
 
 class SceneResult
