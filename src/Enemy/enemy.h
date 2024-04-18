@@ -17,7 +17,7 @@ enum ENEMY_IMAGE
 //画像のパス
 const char ENEMY_IMAGE_PATH[ENEMY_IMEG_MAX][255] =
 {
-	"data/play/kari_enemy.png",			//タイトル背景画像
+	"data/play/1.png",			//タイトル背景画像
 };
 
 class Enemy
@@ -25,8 +25,10 @@ class Enemy
 private:
 	int imgHandl[ENEMY_IMEG_MAX];
 	int posX, posY;
-	// int HP;
+
 public:
+	bool direction[2];			//敵が向いている方向
+	bool isDraw;				//HPが０になったら描画をやめる
 	//初期化
 	void Init();
 

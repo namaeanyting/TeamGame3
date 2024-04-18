@@ -13,14 +13,14 @@ enum PLAY_IMAGE
 //画像のパス
 const char PLAY_IMAGE_PATH[PLAY_IMEG_MAX][255] =
 {
-	"data/play/2.png",			//タイトル背景画像
+	"data/play/back.png",			//タイトル背景画像
 };
 
 class ScenePlay
 {
 private:
 	int imgHandl[PLAY_IMEG_MAX];	//画像ハンドル
-
+	int HitCount;					//フレームカウント
 	
 public:
 	ScenePlay();
@@ -42,4 +42,5 @@ public:
 	void Fin();
 	//プレイヤーと敵当たり判定
 	void PlyerToEnemyHit();
+	
 };

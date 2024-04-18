@@ -6,7 +6,8 @@
 #include"Scene/Play.h"
 #include"Scene/Result.h"
 
-int g_CurrentSceneID = SCENE_ID_INIT_TITLE;
+int g_CurrentSceneID = SCENE_ID_INIT_PLAY;
+
 // Win32アプリケーションは WinMain関数 から始まる
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
@@ -78,11 +79,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		case SCENE_ID_LOOP_PLAY:
 		{
 			play.Step();
-			
-
 			//描画
-			play.Draw();				//背景の描画
-			
+			play.Draw();				
 		}
 		break;
 

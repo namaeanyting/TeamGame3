@@ -16,8 +16,8 @@ void ScenePlay::Init()
 		imgHandl[i] = LoadGraph(PLAY_IMAGE_PATH[i]);
 	}
 
-	//キーの初期化
-	//Input::Init();
+	//あたった時のカウント初期化
+	HitCount = 0;
 
 	//BGM
 	//sound.bgm[BGM_PLAY] = LoadSoundMem("data/Sound/play.mp3");
@@ -39,6 +39,10 @@ void ScenePlay::Init()
 // タイトル通常処理
 void ScenePlay::Step()
 {
+	for (int i = 0; i < 4; i++) {
+		player.direction[i] = false;
+	}
+
 	//キー
 	Input::Step();
 
@@ -64,6 +68,7 @@ void ScenePlay::Step()
 	//当たり判定
 	PlyerToEnemyHit();
 
+	
 	//スペースキーを押したら画面移動
 	if (Input::IsKeyPush(KEY_INPUT_SPACE))
 	{
@@ -85,16 +90,21 @@ void ScenePlay::Draw()
 	{
 		enemy[i].Draw();
 	}
+
 	//デバッグ用
 	DrawFormatString(0, 40, GetColor(255, 255, 255), "playerHP:%d",player.HP);
 	for (int i = 0; i < ENEMY_KAIND; i++)
 	{
-		DrawFormatString(0, 80, GetColor(255, 255, 255), "playerHP:%d", enemy[i].HP);
+		DrawFormatString(0, 80, GetColor(255, 255, 255), "enemyHP:%d", enemy[i].HP);
 	}
-
-	//DrawBox(player.GetPosX(), player.GetPosY(), 
-		//player.GetPosX() + PLAYER_SIZE_X, player.GetPosY() + PLAYER_SIZE_Y,GetColor(255, 255, 255), true);
-
+	if (player.direction[1]) {
+		DrawBox(player.GetPosX(), player.GetPosY(),
+			player.GetPosX() + PLAYER_SIZE_X, player.GetPosY() + PLAYER_SIZE_Y, GetColor(255, 255, 255), true);
+	}
+	if (player.direction[3]) {
+		DrawBox(player.GetPosX(), player.GetPosY(),
+			player.GetPosX() - PLAYER_SIZE_X, player.GetPosY() + PLAYER_SIZE_Y, GetColor(255, 255, 255), true);
+	}
 }
 
 // タイトル終了処理
@@ -118,18 +128,39 @@ void ScenePlay::PlyerToEnemyHit()
 {
 	for (int i = 0; i < ENEMY_KAIND; i++)
 	{
-		if (IsHitRect(player.GetPosX(), player.GetPosY(), PLAYER_SIZE_X, PLAYER_SIZE_Y,
-			enemy[i].GetPosX(), enemy[i].GetPosY(), ENEMY_SIZE_X, ENEMY_SIZE_Y))
-		{
-			if (player.direction[3]) {
+		//左を向いている
+		if (player.direction[3]) {
+
+			if (IsHitRect(player.GetPosX(), player.GetPosY(), PLAYER_SIZE_X, PLAYER_SIZE_Y,
+				enemy[i].GetPosX(), enemy[i].GetPosY(), ENEMY_SIZE_X, ENEMY_SIZE_Y))
+			{
 				enemy[i].HP--;
+				
 			}
-			else {
-				player.HP--;
-			}
-			//if(player.direction[0])
-			//デバッグ用
-			DrawFormatString(0, 20, GetColor(255, 255, 255), "hit");
 		}
 	}
+	//for (int i = 0; i < ENEMY_KAIND; i++)
+	//{
+	//	if (IsHitRect(player.GetPosX(), player.GetPosY(), PLAYER_SIZE_X, PLAYER_SIZE_Y,
+	//		enemy[i].GetPosX(), enemy[i].GetPosY(), ENEMY_SIZE_X, ENEMY_SIZE_Y))
+	//	{
+	//		//攻撃されてから時間をカウント
+	//		HitCount++;
+
+	//		if (player.direction[3] && enemy[i].direction[0]) {
+	//			enemy[i].HP--;
+	//		}
+	//		else if (HitCount > 200) {
+	//			player.HP--;		//100の時だけダメージを与える
+	//			HitCount = 0;		//ダメージを与えたらまた0に戻し、カウントを頭からにする
+	//		}
+	//		//デバッグ用
+	//		DrawFormatString(0, 20, GetColor(255, 255, 255), "hit");
+	//		DrawFormatString(60, 20, GetColor(255, 255, 255), "カウント:%d",HitCount);
+	//	}
+	//}
+
+
+
 }
+

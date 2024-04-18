@@ -25,6 +25,7 @@ void Player::Step()
 //•`‰æ
 void Player::Draw()
 {
+	//DrawRotaGraph(posX, posY, 1.0f, directionAngle / 180 * 3.14, imgHandl[PLAYER_PLAYER], true);
 	DrawRotaGraph(posX, posY, 1.0f, directionAngle / 180 * 3.14, imgHandl[PLAYER_PLAYER], true);
 
 }

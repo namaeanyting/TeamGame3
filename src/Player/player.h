@@ -17,7 +17,7 @@ enum PLAYER_IMAGE
 //画像のパス
 const char PLAYER_IMAGE_PATH[PLAYER_IMEG_MAX][255] =
 {
-	"data/play/kari_player.png",			//タイトル背景画像
+	"data/play/2.png",			//タイトル背景画像
 };
 class Player
 {
