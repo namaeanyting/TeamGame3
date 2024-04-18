@@ -55,13 +55,13 @@ void ScenePlay::Step()
 		enemy[i].Step();
 	}
 
-	//DO
-	for (int i = 0; i < ENEMY_KAIND; i++)
-	{
-		if (enemy[i].HP < 0) {
-			enemy[i].HP = 0;
-		}
-	}
+	////DO
+	//for (int i = 0; i < ENEMY_KAIND; i++)
+	//{
+	//	if (enemy[i].enemyInfo[i].HP < 0) {
+	//		enemy[i].enemyInfo[i].HP = 0;
+	//	}
+	//}
 	if (player.HP < 0) {
 		player.HP = 0;
 	}
@@ -92,7 +92,7 @@ void ScenePlay::Draw()
 	}
 
 	//デバッグ用
-	DrawFormatString(0, 40, GetColor(255, 255, 255), "playerHP:%d",player.HP);
+	/*DrawFormatString(0, 40, GetColor(255, 255, 255), "playerHP:%d",player.HP);
 	for (int i = 0; i < ENEMY_KAIND; i++)
 	{
 		DrawFormatString(0, 80, GetColor(255, 255, 255), "enemyHP:%d", enemy[i].HP);
@@ -104,7 +104,7 @@ void ScenePlay::Draw()
 	if (player.direction[3]) {
 		DrawBox(player.GetPosX(), player.GetPosY(),
 			player.GetPosX() - PLAYER_SIZE_X, player.GetPosY() + PLAYER_SIZE_Y, GetColor(255, 255, 255), true);
-	}
+	}*/
 }
 
 // タイトル終了処理
@@ -128,16 +128,16 @@ void ScenePlay::PlyerToEnemyHit()
 {
 	for (int i = 0; i < ENEMY_KAIND; i++)
 	{
-		//左を向いている
-		if (player.direction[3]) {
+		////左を向いている
+		//if (player.direction[3]) {
 
-			if (IsHitRect(player.GetPosX(), player.GetPosY(), PLAYER_SIZE_X, PLAYER_SIZE_Y,
-				enemy[i].GetPosX(), enemy[i].GetPosY(), ENEMY_SIZE_X, ENEMY_SIZE_Y))
-			{
-				enemy[i].HP--;
-				
-			}
-		}
+		//	if (IsHitRect(player.GetPosX(), player.GetPosY(), PLAYER_SIZE_X, PLAYER_SIZE_Y,
+		//		enemy[i].GetPosX(), enemy[i].GetPosY(), ENEMY_SIZE_X, ENEMY_SIZE_Y))
+		//	{
+		//		enemy[i].HP--;
+		//		
+		//	}
+		//}
 	}
 	//for (int i = 0; i < ENEMY_KAIND; i++)
 	//{

@@ -1,4 +1,6 @@
 #pragma once
+#define ENEMY_MAX_NUM	(5)						//’e‚ÌÅ‘å”iƒnƒ“ƒhƒ‹‚Ì”j
+
 // “G‚Ì‰æ‘œƒTƒCƒY
 const int ENEMY_SIZE_Y = 200;
 const int ENEMY_SIZE_X = 140;
@@ -6,10 +8,15 @@ const int ENEMY_KAIND = 3;
 //HP‚ÌÅ‘å’l
 const int ENEMY_HP_MAX = 6;
 
+//“G‚ÌoŒ»”
+const int ENEMY_MAX = 6;
+
 //‰æ‘œ‚ğg‚¤‚Æ‚«‚Ì–¼‘O
 enum ENEMY_IMAGE
 {
-	ENEMY_ENEMY,		//“G‚Ìp
+	ENEMY_ENEMY1,		//“G‚Ìp
+	ENEMY_ENEMY2,		//“G‚Ìp
+	ENEMY_ENEMY3,		//“G‚Ìp
 
 	ENEMY_IMEG_MAX,		//‰æ‘œ‚ÌÅ‘å–‡”
 };
@@ -18,23 +25,37 @@ enum ENEMY_IMAGE
 const char ENEMY_IMAGE_PATH[ENEMY_IMEG_MAX][255] =
 {
 	"data/play/1.png",			//ƒ^ƒCƒgƒ‹”wŒi‰æ‘œ
+	"data/play/3.png",			//ƒ^ƒCƒgƒ‹”wŒi‰æ‘œ
+	"data/play/4.png",			//ƒ^ƒCƒgƒ‹”wŒi‰æ‘œ
 };
+//struct EnemyInfo
+//{
+//	int x, y;
+//	int HP;
+//	bool direction[2];			//“G‚ªŒü‚¢‚Ä‚¢‚é•ûŒü
+//	bool isDraw;				//HP‚ª‚O‚É‚È‚Á‚½‚ç•`‰æ‚ğ‚â‚ß‚é
+//	int imgHandl[ENEMY_IMEG_MAX];
+//
+//};
 
 class Enemy
 {
 private:
-	int imgHandl[ENEMY_IMEG_MAX];
-	int posX, posY;
-
-public:
+	//EnemyInfo enemyInfo[ENEMY_MAX_NUM] = { 0 };
+	int x, y;
+	int HP;
 	bool direction[2];			//“G‚ªŒü‚¢‚Ä‚¢‚é•ûŒü
 	bool isDraw;				//HP‚ª‚O‚É‚È‚Á‚½‚ç•`‰æ‚ğ‚â‚ß‚é
+	int imgHandl[ENEMY_IMEG_MAX];
+public:
 	//‰Šú‰»
 	void Init();
 
 	//’Êíˆ—
 	void Step();
 
+	//ˆÚ“®
+	void Move();
 	//•`‰æ
 	void Draw();
 
@@ -42,9 +63,7 @@ public:
 	void Fin();
 	
 	//À•Wæ“¾
-	int GetPosX() { return posX; }
-	int GetPosY() { return posY; }
+	//int GetPosX(int num) { return enemyInfo[num].x; }
+	//int GetPosY(int num) { return enemyInfo[num].y; }
 
-	//HP
-	int HP;
 };
