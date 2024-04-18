@@ -19,6 +19,22 @@ void ScenePlay::Init()
 	//あたった時のカウント初期化
 	HitCount = 0;
 
+	//無敵ゲージバー画像読み込み
+	Invincible_Bar_Hndl = LoadGraph(INVINCIBLE_BAR);
+
+	//無敵ゲージ画像読み込み
+	Invincible_Gauge_Hndl = LoadGraph(INVINCIBLE_GAUGE);
+
+	//無敵フラグ
+	Invincible = false;
+
+	//無敵時間
+	Invincible_Time = 5;
+
+	//きつねを倒したカウント
+	Fox_Count = 0;
+
+
 	//BGM
 	//sound.bgm[BGM_PLAY] = LoadSoundMem("data/Sound/play.mp3");
 	////音量調整
@@ -130,6 +146,21 @@ void ScenePlay::Draw()
 	{
 		enemy[i].Draw();
 	}
+
+	//無敵ゲージバー描画
+	DrawGraph(100, 100, Invincible_Bar_Hndl, true);
+
+	//無敵ゲージを増やす描画
+	if (Invincible == false)
+	{
+		DrawRectGraph(100, 100, 0, 0, 10 * Fox_Count, 100, Invincible_Gauge_Hndl, true, false);
+	}
+	//無敵だった場合、ゲージを減らす描画
+	else
+	{
+		DrawRectGraph(100, 100, 0, 0, 20 * Invincible_Time, 100, Invincible_Gauge_Hndl, true, false);
+	}
+	
 
 	//デバッグ用
 	DrawFormatString(0, 0, GetColor(255, 255, 255), "flame:%d", flameCount);
