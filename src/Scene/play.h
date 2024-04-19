@@ -19,6 +19,18 @@ const char PLAY_IMAGE_PATH[PLAY_IMEG_MAX][255] =
 #define INVINCIBLE_BAR		"data/play/bar.png"		//無敵ゲージバー
 #define INVINCIBLE_GAUGE	"data/play/ゲージ.png"	//無敵ゲージ
 
+
+#define PLAYER_ATTACK_MAX_NUM	(3)		//エフェクトの最大数
+#define ENEMY_ATTACK_MAX_NUM	(3)
+
+#define PLAYER_ATTACK_EFFECT1		"data/play/あたー.png"
+#define PLAYER_ATTACK_EFFECT2		"data/play/ふぉあ.png"
+#define PLAYER_ATTACK_EFFECT3		"data/play/やー.png"
+
+#define ENEMY_ATTACK_EFFECT1		"data/play/いたい.png"
+#define ENEMY_ATTACK_EFFECT2		"data/play/もうだめだー.png"
+#define ENEMY_ATTACK_EFFECT3		"data/play/もうやめて.png"
+
 class ScenePlay
 {
 private:
@@ -31,6 +43,19 @@ private:
 	bool Invincible;				//無敵フラグ
 	int Invincible_Time;			//無敵時間変数
 	int Fox_Count;					//きつねを倒した時のカウント
+
+	int player_attack_Hndl[PLAYER_ATTACK_MAX_NUM];
+
+	int enemy_attack_Hndl[ENEMY_ATTACK_MAX_NUM];
+
+	int Player_Effect_Num;
+
+	int Enemy_Effect_Num;
+
+	bool Player_Attack;
+	
+	bool Enemy_Attack;
+
 	
 public:
 	ScenePlay();

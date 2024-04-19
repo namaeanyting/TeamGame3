@@ -16,6 +16,8 @@ void ScenePlay::Init()
 		imgHandl[i] = LoadGraph(PLAY_IMAGE_PATH[i]);
 	}
 
+	
+
 	//あたった時のカウント初期化
 	HitCount = 0;
 
@@ -34,6 +36,33 @@ void ScenePlay::Init()
 	//きつねを倒したカウント
 	Fox_Count = 0;
 
+	Player_Effect_Num = 0;
+	Enemy_Effect_Num = 0;
+
+	for (int i = 0; i < 3; i++)
+	{
+		player_attack_Hndl[i] = 0;
+	}
+	
+	player_attack_Hndl[0] = LoadGraph(PLAYER_ATTACK_EFFECT1);
+	player_attack_Hndl[1] = LoadGraph(PLAYER_ATTACK_EFFECT2);
+	player_attack_Hndl[2] = LoadGraph(PLAYER_ATTACK_EFFECT3);
+
+	for (int i = 0; i < 3; i++)
+	{
+		enemy_attack_Hndl[i] = 0;
+	}
+
+	enemy_attack_Hndl[0] = LoadGraph(ENEMY_ATTACK_EFFECT1);
+	enemy_attack_Hndl[1] = LoadGraph(ENEMY_ATTACK_EFFECT2);
+	enemy_attack_Hndl[2] = LoadGraph(ENEMY_ATTACK_EFFECT3);
+
+	//プレイヤーアタックフラグ
+	Player_Attack = false;
+	
+	//敵アタックフラグ
+	Enemy_Attack = false;
+	
 
 	//BGM
 	//sound.bgm[BGM_PLAY] = LoadSoundMem("data/Sound/play.mp3");
@@ -124,6 +153,11 @@ void ScenePlay::Step()
 	//当たり判定
 	PlyerToEnemyHit();
 
+	////テスト用
+	//if (Input::IsKeyPush(KEY_INPUT_RETURN))
+	//{
+	//	Player_Attack = true;
+	//}
 	
 	//スペースキーを押したら画面移動
 	if (Input::IsKeyPush(KEY_INPUT_SPACE))
@@ -158,9 +192,19 @@ void ScenePlay::Draw()
 	//無敵だった場合、ゲージを減らす描画
 	else
 	{
-		DrawRectGraph(100, 100, 0, 0, 20 * Invincible_Time, 100, Invincible_Gauge_Hndl, true, false);
+		DrawRectGraph(100, 100, 400, 0, 20 * Invincible_Time, 100, Invincible_Gauge_Hndl, true, false);
 	}
 	
+	if (Player_Attack == true)
+	{
+		DrawGraph(200, 400, player_attack_Hndl[Player_Effect_Num], true);
+		Player_Effect_Num++;
+		if (Player_Effect_Num >= 3)
+		{
+			Player_Effect_Num = 0;
+		}
+		Player_Attack = false;
+	}
 
 	//デバッグ用
 	DrawFormatString(0, 0, GetColor(255, 255, 255), "flame:%d", flameCount);
