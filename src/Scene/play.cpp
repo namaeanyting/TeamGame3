@@ -4,9 +4,6 @@
 #include "../Input/Input.h"
 #include "../Collision/Collision.h"
 
-ScenePlay::ScenePlay(){}
-ScenePlay::~ScenePlay() {}
-
 //タイトルの初期化
 void ScenePlay::Init()
 {
@@ -15,6 +12,7 @@ void ScenePlay::Init()
 	{
 		imgHandl[i] = LoadGraph(PLAY_IMAGE_PATH[i]);
 	}
+
 
 	//あたった時のカウント初期化
 	HitCount = 0;
@@ -34,40 +32,21 @@ void ScenePlay::Init()
 	//きつねを倒したカウント
 	Fox_Count = 0;
 
-
-	//BGM
-	//sound.bgm[BGM_PLAY] = LoadSoundMem("data/Sound/play.mp3");
-	////音量調整
-	//ChangeVolumeSoundMem(255 * 50 / 100, sound.bgm[BGM_PLAY]);
-	//PlaySoundMem(sound.bgm[BGM_PLAY], DX_PLAYTYPE_LOOP, true);
-	////SE
-	//sound.InitPlay();
-
 	//各クラス初期化
 	player.Init();
-	for (int i = 0; i < ENEMY_KAIND; i++)
+	for (int i = 0; i < ENEMY_NUM; i++)
 	{
 		enemy[i].Init();
 	}
 	flameCount = 0;
 
-	//左から進行
-	enemy[0].x = 0;
-	enemy[0].y = 360;
-	enemy[0].isLeft = true;
-	enemy[0].isActive = true;
+	//ランダムに生成
+	for (int i = 0; i < ENEMY_NUM; i++)
+	{
+		EnemyGeneration(i);
+	}
+	
 
-	//右から進行
-	enemy[1].x = 1280;
-	enemy[1].y = 360;
-	enemy[1].isLeft = false;
-	enemy[1].isActive = true;
-
-	//右から進行
-	enemy[2].x = 1280;
-	enemy[2].y = 360;
-	enemy[2].isLeft = false;
-	enemy[2].isActive = false;
 	//通常処理へ移動
 	g_CurrentSceneID = SCENE_ID_LOOP_PLAY;
 }
@@ -76,9 +55,8 @@ void ScenePlay::Step()
 {
 	flameCount++;
 
-	for (int i = 0; i < 4; i++) {
-		player.direction[i] = false;
-	}
+	//毎フレームボタンの初期化
+	player.BottunInit();
 
 	//キー
 	Input::Step();
@@ -87,40 +65,17 @@ void ScenePlay::Step()
 	player.Operation();
 
 	//敵進行
-	for (int i = 0; i < ENEMY_KAIND; i++)
+	for (int i = 0; i < ENEMY_NUM; i++)
 	{
 		enemy[i].Step();
 	}
 
-	if (flameCount >= 60) {
-		for (int i = 0; i < ENEMY_KAIND; i++)
-		{
-			if (!enemy[i].isActive) {
-				if (enemy[i].isLeft) {
-					enemy[i].x = 0;
-					enemy[i].y = 360;
-				}
-				else {
-					enemy[i].x = 1280;
-					enemy[i].y = 360;
-				}
+	//リスポーン
+	Respawn();
 
-				enemy[i].isActive = true;
-				flameCount = 0;
-			}
-		}
-	}
+	//HP制御
+	HPControl();
 
-	////DO
-	//for (int i = 0; i < ENEMY_KAIND; i++)
-	//{
-	//	if (enemy[i].HP < 0) {
-	//		enemy[i].HP = 0;
-	//	}
-	//}
-	if (player.HP < 0) {
-		player.HP = 0;
-	}
 	//当たり判定
 	PlyerToEnemyHit();
 
@@ -136,48 +91,31 @@ void ScenePlay::Step()
 void ScenePlay::Draw()
 {
 	//背景画像
-	//DrawGraph(0, 0, imgHandl[PLAY_BACK], true);
+	DrawGraph(0, 0, imgHandl[PLAY_BACK], true);
 
 	//プレイヤー描画
 	player.Draw();
 
 	//敵描画
-	for (int i = 0; i < ENEMY_KAIND; i++)
+	for (int i = 0; i < ENEMY_NUM; i++)
 	{
 		enemy[i].Draw();
 	}
 
-	//無敵ゲージバー描画
-	DrawGraph(100, 100, Invincible_Bar_Hndl, true);
-
-	//無敵ゲージを増やす描画
-	if (Invincible == false)
-	{
-		DrawRectGraph(100, 100, 0, 0, 10 * Fox_Count, 100, Invincible_Gauge_Hndl, true, false);
-	}
-	//無敵だった場合、ゲージを減らす描画
-	else
-	{
-		DrawRectGraph(100, 100, 0, 0, 20 * Invincible_Time, 100, Invincible_Gauge_Hndl, true, false);
-	}
-	
+	//無敵関連描画
+	DrawInvincibleGauge();
 
 	//デバッグ用
 	DrawFormatString(0, 0, GetColor(255, 255, 255), "flame:%d", flameCount);
+	DrawFormatString(0, 20, GetColor(255, 255, 255), "playerHP:%d",player.HP);
+	for (int i = 0; i < ENEMY_NUM; i++){
+		DrawFormatString(0, 80+i*20, GetColor(255, 255, 255), "enemyHP:%d", enemy[i].HP);
+	}
+	//座標
+	DrawFormatString(0, 160, GetColor(255, 255, 255), "敵0のx:%d", enemy[0].x);
+	DrawFormatString(0, 180, GetColor(255, 255, 255), "敵1のx:%d", enemy[1].x);
+	DrawFormatString(0, 200, GetColor(255, 255, 255), "敵2のx:%d", enemy[2].x);
 
-	/*DrawFormatString(0, 40, GetColor(255, 255, 255), "playerHP:%d",player.HP);
-	for (int i = 0; i < ENEMY_KAIND; i++)
-	{
-		DrawFormatString(0, 80, GetColor(255, 255, 255), "enemyHP:%d", enemy[i].HP);
-	}
-	if (player.direction[1]) {
-		DrawBox(player.GetPosX(), player.GetPosY(),
-			player.GetPosX() + PLAYER_SIZE_X, player.GetPosY() + PLAYER_SIZE_Y, GetColor(255, 255, 255), true);
-	}
-	if (player.direction[3]) {
-		DrawBox(player.GetPosX(), player.GetPosY(),
-			player.GetPosX() - PLAYER_SIZE_X, player.GetPosY() + PLAYER_SIZE_Y, GetColor(255, 255, 255), true);
-	}*/
 }
 
 // タイトル終了処理
@@ -199,41 +137,111 @@ void ScenePlay::Fin()
 //プレイヤーと敵当たり判定
 void ScenePlay::PlyerToEnemyHit()
 {
-	for (int i = 0; i < ENEMY_KAIND; i++)
+	for (int i = 0; i < ENEMY_NUM; i++)
 	{
-		////左を向いている
-		//if (player.direction[3]) {
+		if (IsHitRect(enemy[i].x, enemy[i].y, ENEMY_SIZE_X, ENEMY_SIZE_Y,
+			(WINDOW_WIDTH/2) - (PLAYER_SIZE_X/2), (WINDOW_HEIGHT/2)- (ENEMY_SIZE_Y/2), PLAYER_SIZE_X, PLAYER_SIZE_Y))
+		{
+			//攻撃されてから時間をカウント
+			HitCount++;
 
-		//	if (IsHitRect(player.GetPosX(), player.GetPosY(), PLAYER_SIZE_X, PLAYER_SIZE_Y,
-		//		enemy[i].GetPosX(), enemy[i].GetPosY(), ENEMY_SIZE_X, ENEMY_SIZE_Y))
-		//	{
-		//		enemy[i].HP--;
-		//		
-		//	}
-		//}
+			//プレイヤーが左向いてる && 左から進行
+			if (player.direction[3] && enemy[i].isLeft) {
+				enemy[i].HP--;
+				if (enemy[i].HP == 0) {
+					enemy[i].isActive = false;//死亡グラフを折る
+				}
+			}
+			else if (HitCount > 200) {
+				player.HP--;		//100の時だけダメージを与える
+				HitCount = 0;		//ダメージを与えたらまた0に戻し、カウントを頭からにする
+			}
+			DrawFormatString(0, 420, GetColor(255, 255, 255), "左hit");
+
+		}	
+		if (IsHitRect(enemy[i].x, enemy[i].y, ENEMY_SIZE_X, ENEMY_SIZE_Y,
+			(WINDOW_WIDTH / 2) + (PLAYER_SIZE_X / 2), (WINDOW_HEIGHT / 2) - (ENEMY_SIZE_Y / 2), PLAYER_SIZE_X, PLAYER_SIZE_Y))
+		{
+			//プレイヤーが右向いてる && 右から進行
+			if (player.direction[1] && !enemy[i].isLeft) {
+				enemy[i].HP--;
+				if (enemy[i].HP == 0) {
+					enemy[i].isActive = false;//死亡グラフを折る
+				}
+			}
+			else if (HitCount > 200) {
+				player.HP--;		//100の時だけダメージを与える
+				HitCount = 0;		//ダメージを与えたらまた0に戻し、カウントを頭からにする
+			}
+
+			//デバッグ用
+			DrawFormatString(0, 440, GetColor(255, 255, 255), "右hit");
+			//DrawFormatString(0, 40, GetColor(255, 255, 255), "カウント:%d", HitCount);
+		}
 	}
-	//for (int i = 0; i < ENEMY_KAIND; i++)
-	//{
-	//	if (IsHitRect(player.GetPosX(), player.GetPosY(), PLAYER_SIZE_X, PLAYER_SIZE_Y,
-	//		enemy[i].GetPosX(), enemy[i].GetPosY(), ENEMY_SIZE_X, ENEMY_SIZE_Y))
-	//	{
-	//		//攻撃されてから時間をカウント
-	//		HitCount++;
-
-	//		if (player.direction[3] && enemy[i].direction[0]) {
-	//			enemy[i].HP--;
-	//		}
-	//		else if (HitCount > 200) {
-	//			player.HP--;		//100の時だけダメージを与える
-	//			HitCount = 0;		//ダメージを与えたらまた0に戻し、カウントを頭からにする
-	//		}
-	//		//デバッグ用
-	//		DrawFormatString(0, 20, GetColor(255, 255, 255), "hit");
-	//		DrawFormatString(60, 20, GetColor(255, 255, 255), "カウント:%d",HitCount);
-	//	}
-	//}
 
 
 
 }
 
+//ランダム生成
+void ScenePlay::EnemyGeneration(int enemyNum) {
+	if (GetRand(1) == 0) {
+		enemy[enemyNum].x = 0;
+		enemy[enemyNum].y = 360;
+		enemy[enemyNum].isLeft = true;
+	}
+	else {
+		enemy[enemyNum].x = 1280;
+		enemy[enemyNum].y = 360;
+		enemy[enemyNum].isLeft = false;
+	}
+}
+
+//敵のよみがえり設定
+void ScenePlay::Respawn()
+{
+	if (flameCount >= 60) {
+		for (int i = 0; i < ENEMY_NUM; i++)
+		{
+			if (!enemy[i].isActive) {
+
+				EnemyGeneration(i);
+				enemy[i].isActive = true;
+				flameCount = 0;
+			}
+		}
+	}
+}
+
+//HPの制御
+void ScenePlay::HPControl()
+{
+	for (int i = 0; i < ENEMY_NUM; i++)
+	{
+		if (enemy[i].HP < 0) {
+			enemy[i].HP = 0;
+		}
+	}
+	if (player.HP < 0) {
+		player.HP = 0;
+	}
+}
+
+//無敵ゲージ描画
+void ScenePlay::DrawInvincibleGauge()
+{
+	// 無敵ゲージバー描画
+		DrawGraph(100, 100, Invincible_Bar_Hndl, true);
+
+	//無敵ゲージを増やす描画
+	if (Invincible == false)
+	{
+		DrawRectGraph(100, 100, 0, 0, 10 * Fox_Count, 100, Invincible_Gauge_Hndl, true, false);
+	}
+	//無敵だった場合、ゲージを減らす描画
+	else
+	{
+		DrawRectGraph(100, 100, 0, 0, 20 * Invincible_Time, 100, Invincible_Gauge_Hndl, true, false);
+	}
+}

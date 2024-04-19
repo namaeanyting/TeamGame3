@@ -2,6 +2,9 @@
 #include "../Player/player.h"
 #include "../Enemy/enemy.h"
 
+
+
+
 //画像を使うときの名前
 enum PLAY_IMAGE
 {
@@ -33,12 +36,9 @@ private:
 	int Fox_Count;					//きつねを倒した時のカウント
 	
 public:
-	ScenePlay();
-	~ScenePlay();
 
 	Player player;
-	Enemy enemy[ENEMY_KAIND];
-
+	Enemy enemy[ENEMY_NUM];//敵の数
 	int flameCount;
 	//初期化
 	void Init();
@@ -53,5 +53,12 @@ public:
 	void Fin();
 	//プレイヤーと敵当たり判定
 	void PlyerToEnemyHit();
-	
+	//ランダム生成
+	void EnemyGeneration(int enemyNum);
+	//敵のよみがえり設定
+	void Respawn();
+	//HPの制御
+	void HPControl();
+	//無敵ゲージ描画
+	void DrawInvincibleGauge();
 };

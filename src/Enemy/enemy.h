@@ -4,7 +4,7 @@
 // 敵の画像サイズ
 const int ENEMY_SIZE_Y = 200;
 const int ENEMY_SIZE_X = 140;
-const int ENEMY_KAIND = 3;
+const int ENEMY_NUM = 3;
 //HPの最大値
 const int ENEMY_HP_MAX = 6;
 
@@ -24,23 +24,15 @@ enum ENEMY_IMAGE
 //画像のパス
 const char ENEMY_IMAGE_PATH[ENEMY_IMEG_MAX][255] =
 {
-	"data/play/1.png",			//タイトル背景画像
-	"data/play/3.png",			//タイトル背景画像
-	"data/play/4.png",			//タイトル背景画像
-};
-struct EnmemyInfo
-{
-	
+	"data/play/1.png",			//
+	"data/play/3.png",			//
+	"data/play/4.png",			//
 };
 
 class Enemy
 {
 private:
-	bool direction[2];			//敵が向いている方向
 	int imgHandl[ENEMY_IMEG_MAX];
-	int enemyNum[3];			//敵の種類
-
-	
 public:
 	int HP;
 	int x, y;
@@ -62,4 +54,5 @@ public:
 	//終了処理
 	void Fin();
 
+	
 };

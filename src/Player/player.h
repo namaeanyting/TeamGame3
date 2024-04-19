@@ -9,7 +9,9 @@ const int PLAYER_HP_MAX = 6;
 //画像を使うときの名前
 enum PLAYER_IMAGE
 {
-	PLAYER_PLAYER,		//タイトルの背景
+	PLAYER_NOMAL,		//起立
+	PLAYER_KICK,		//足蹴り
+	PLAYER_PUNCH,		//パンチ
 
 	PLAYER_IMEG_MAX,		//画像の枚数
 };
@@ -17,7 +19,9 @@ enum PLAYER_IMAGE
 //画像のパス
 const char PLAYER_IMAGE_PATH[PLAYER_IMEG_MAX][255] =
 {
-	"data/play/2.png",			//タイトル背景画像
+	"data/player/usagi_normal.png",			
+	"data/player/usagi_kick.png",			
+	"data/player/usagi_attack.png",			
 };
 class Player
 {
@@ -28,6 +32,8 @@ private:
 	
 public:
 	bool direction[4];			//プレイヤーが向いている・押しているキー
+	bool attacDirection[4];			//攻撃プレイヤーが向いている・押しているキー
+	bool isHit;//単純に敵に攻撃したか
 	int HP;
 	//初期化
 	void Init();
@@ -44,6 +50,12 @@ public:
 	//プレイヤー操作
 	void Operation();
 
+	//ボタンの初期化/毎フレーム初期化させる
+	void BottunInit();
+
+	//方向せって
+	void directionSetting(int num);
+	
 	//座標取得
 	int GetPosX() { return posX; }
 	int GetPosY() { return posY; }
