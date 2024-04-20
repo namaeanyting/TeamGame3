@@ -9,6 +9,7 @@ void Enemy::Init()
 	}
 	
 	flameCount = 0;
+	phese = 0;
 
 	//進行方向の初期化
 	HP = ENEMY_HP_MAX;
@@ -19,18 +20,17 @@ void Enemy::Step()
 {
 	//生きているなら進行
 	if (isActive) {
-		if (isLeft) {
+		KnockBack();
+		if (HP>3&&isLeft) {
 			x += 3;	//右に行く
 			if (x > (1280 / 2) - ENEMY_SIZE_X) {
 				x = (1280 / 2) - ENEMY_SIZE_X;
-				//isActive = false;
 			}
 		}
-		else {
+		else if (HP > 3 && !isLeft) {
 			x -= 3;	//左に行く
 			if (x < (1280 / 2) + ENEMY_SIZE_X) {
 				x = (1280 / 2) + ENEMY_SIZE_X;
-				//isActive = false;
 			}
 		}
 	}
@@ -38,6 +38,7 @@ void Enemy::Step()
 	else {
 		HP = ENEMY_HP_MAX;//HPを再所持させたい
 	}
+
 }
 
 //描画
@@ -48,8 +49,55 @@ void Enemy::Draw()
 	}
 }
 
+//ノックバック処理
+void Enemy::KnockBack()
+{
+	//HPが半分削れたら後ろに下がる
+	if (HP == 3) {
+		switch (phese)
+		{
+		case 0:
+			//後ろまで下がります
+			if (isLeft) {
+				x -= 8;
+				//次のフェーズへ進
+				if (x == 324) {
+					phese = 1;
+				}
+			}
+			else {
+				x += 8;
+				if (x == 956) {
+					phese = 1;
+				}
+			}
+			
+			break;
+		case 1:
+			if (isLeft) {
+				x += 3;	//右に行く
+				if (x > (1280 / 2) - ENEMY_SIZE_X) {
+					x = (1280 / 2) - ENEMY_SIZE_X;
+					phese = 0;
+				}
+			}
+			else {
+				x -= 3;	//左に行く
+				if (x < (1280 / 2) + ENEMY_SIZE_X) {
+					x = (1280 / 2) + ENEMY_SIZE_X;
+					phese = 0;
+
+				}
+			}
+			break;
+		default:
+			break;
+		}
+	}
+}
+
 /*
-* 
+* メモ
 	//左から進行
 	enemy[0].x = 0;
 	enemy[0].y = 360;
@@ -62,6 +110,20 @@ void Enemy::Draw()
 	enemy[1].isLeft = false;
 	enemy[1].isActive = true;
 
+	//場所の制御
+void Enemy::PosXControl(bool isLeft)
+{
+	if (isLeft) {
+		if (x > (1280 / 2) - ENEMY_SIZE_X) {
+			x = (1280 / 2) - ENEMY_SIZE_X;
+		}
+	}
+	else {
+		if (x < (1280 / 2) + ENEMY_SIZE_X) {
+			x = (1280 / 2) + ENEMY_SIZE_X;
+		}
+	}
+}
 	
 
 

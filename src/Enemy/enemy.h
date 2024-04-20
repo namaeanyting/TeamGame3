@@ -1,10 +1,10 @@
 #pragma once
 #define ENEMY_MAX_NUM	(5)						//弾の最大数（ハンドルの数）
-
+const int WINDOW_H = 1280;
 // 敵の画像サイズ
 const int ENEMY_SIZE_Y = 200;
 const int ENEMY_SIZE_X = 140;
-const int ENEMY_NUM = 3;
+const int ENEMY_NUM = 2;
 //HPの最大値
 const int ENEMY_HP_MAX = 6;
 
@@ -33,6 +33,7 @@ class Enemy
 {
 private:
 	int imgHandl[ENEMY_IMEG_MAX];
+	int phese;//ノックバックの場面進行用
 public:
 	int HP;
 	int x, y;
@@ -54,5 +55,8 @@ public:
 	//終了処理
 	void Fin();
 
+	//ノックバック処理
+	void KnockBack();
 	
 };
+

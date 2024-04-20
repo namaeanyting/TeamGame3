@@ -5,6 +5,7 @@ const int PLAYER_SIZE_X = 140;
 
 //HPの最大値
 const int PLAYER_HP_MAX = 6;
+#define PLAYER_IMG "data/player/player.png"
 
 //画像を使うときの名前
 enum PLAYER_IMAGE
@@ -29,12 +30,15 @@ private:
 	int imgHandl[PLAYER_IMEG_MAX];
 	int posX, posY;
 	float directionAngle;		//プレイヤーが向いている方向
-	
+	int playerImg[3];
 public:
 	bool direction[4];			//プレイヤーが向いている・押しているキー
 	bool attacDirection[4];			//攻撃プレイヤーが向いている・押しているキー
 	bool isHit;//単純に敵に攻撃したか
+	int playerImgNum;		//プレイヤーの画像添え字
 	int HP;
+	int attckCount;				//腕を伸ばした数・最大３
+
 	//初期化
 	void Init();
 
@@ -53,7 +57,7 @@ public:
 	//ボタンの初期化/毎フレーム初期化させる
 	void BottunInit();
 
-	//方向せって
+	//方向設定
 	void directionSetting(int num);
 	
 	//座標取得

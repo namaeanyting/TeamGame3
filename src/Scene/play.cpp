@@ -15,7 +15,8 @@ void ScenePlay::Init()
 
 
 	//あたった時のカウント初期化
-	HitCount = 0;
+	HitCount[0] = 0;
+	HitCount[1] = 0;
 
 	//無敵ゲージバー画像読み込み
 	Invincible_Bar_Hndl = LoadGraph(INVINCIBLE_BAR);
@@ -55,9 +56,8 @@ void ScenePlay::Step()
 {
 	flameCount++;
 
-	//毎フレームボタンの初期化
+	//毎フレームボタンをfalseに
 	player.BottunInit();
-
 	//キー
 	Input::Step();
 
@@ -70,7 +70,7 @@ void ScenePlay::Step()
 		enemy[i].Step();
 	}
 
-	//リスポーン
+	//敵のリスポーン
 	Respawn();
 
 	//HP制御
@@ -78,7 +78,7 @@ void ScenePlay::Step()
 
 	//当たり判定
 	PlyerToEnemyHit();
-
+	player.Step();
 	
 	//スペースキーを押したら画面移動
 	if (Input::IsKeyPush(KEY_INPUT_SPACE))
@@ -91,7 +91,7 @@ void ScenePlay::Step()
 void ScenePlay::Draw()
 {
 	//背景画像
-	DrawGraph(0, 0, imgHandl[PLAY_BACK], true);
+	//DrawGraph(0, 0, imgHandl[PLAY_BACK], true);
 
 	//プレイヤー描画
 	player.Draw();
@@ -139,39 +139,45 @@ void ScenePlay::PlyerToEnemyHit()
 {
 	for (int i = 0; i < ENEMY_NUM; i++)
 	{
+		//左
 		if (IsHitRect(enemy[i].x, enemy[i].y, ENEMY_SIZE_X, ENEMY_SIZE_Y,
 			(WINDOW_WIDTH/2) - (PLAYER_SIZE_X/2), (WINDOW_HEIGHT/2)- (ENEMY_SIZE_Y/2), PLAYER_SIZE_X, PLAYER_SIZE_Y))
 		{
 			//攻撃されてから時間をカウント
-			HitCount++;
+			HitCount[0]++;
 
-			//プレイヤーが左向いてる && 左から進行
-			if (player.direction[3] && enemy[i].isLeft) {
+			//プレイヤーが左向いて攻撃 && 敵左から進行
+			if (player.attacDirection[3] && enemy[i].isLeft) {
 				enemy[i].HP--;
+				player.attckCount++;
+				
 				if (enemy[i].HP == 0) {
 					enemy[i].isActive = false;//死亡グラフを折る
 				}
 			}
-			else if (HitCount > 200) {
+			else if (HitCount[0] > 200) {
 				player.HP--;		//100の時だけダメージを与える
-				HitCount = 0;		//ダメージを与えたらまた0に戻し、カウントを頭からにする
+				HitCount[0] = 0;		//ダメージを与えたらまた0に戻し、カウントを頭からにする
 			}
 			DrawFormatString(0, 420, GetColor(255, 255, 255), "左hit");
 
-		}	
+		}
+		//右
 		if (IsHitRect(enemy[i].x, enemy[i].y, ENEMY_SIZE_X, ENEMY_SIZE_Y,
 			(WINDOW_WIDTH / 2) + (PLAYER_SIZE_X / 2), (WINDOW_HEIGHT / 2) - (ENEMY_SIZE_Y / 2), PLAYER_SIZE_X, PLAYER_SIZE_Y))
 		{
+			//攻撃されてから時間をカウント
+			HitCount[1]++;
 			//プレイヤーが右向いてる && 右から進行
-			if (player.direction[1] && !enemy[i].isLeft) {
+			if (player.attacDirection[1] && !enemy[i].isLeft) {
 				enemy[i].HP--;
 				if (enemy[i].HP == 0) {
 					enemy[i].isActive = false;//死亡グラフを折る
 				}
 			}
-			else if (HitCount > 200) {
+			else if (HitCount[1] > 200) {
 				player.HP--;		//100の時だけダメージを与える
-				HitCount = 0;		//ダメージを与えたらまた0に戻し、カウントを頭からにする
+				HitCount[1] = 0;		//ダメージを与えたらまた0に戻し、カウントを頭からにする
 			}
 
 			//デバッグ用
@@ -179,9 +185,6 @@ void ScenePlay::PlyerToEnemyHit()
 			//DrawFormatString(0, 40, GetColor(255, 255, 255), "カウント:%d", HitCount);
 		}
 	}
-
-
-
 }
 
 //ランダム生成

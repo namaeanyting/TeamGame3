@@ -26,7 +26,7 @@ class ScenePlay
 {
 private:
 	int imgHandl[PLAY_IMEG_MAX];	//画像ハンドル
-	int HitCount;					//フレームカウント
+	int HitCount[2];					//フレームカウント
 
 	int Invincible_Bar_Hndl;				//無敵ゲージバー画像ハンドル
 	int Invincible_Gauge_Hndl;				//無敵ゲージ画像ハンドル
