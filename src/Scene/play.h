@@ -1,10 +1,7 @@
 #pragma once
 #include "../Player/player.h"
 #include "../Enemy/enemy.h"
-
-
-
-
+#define ATTACK_WAITE_TIME  75
 //画像を使うときの名前
 enum PLAY_IMAGE
 {
@@ -26,7 +23,7 @@ class ScenePlay
 {
 private:
 	int imgHandl[PLAY_IMEG_MAX];	//画像ハンドル
-	int HitCount[2];					//フレームカウント
+	int HitCount[ENEMY_NUM][2];					//フレームカウント
 
 	int Invincible_Bar_Hndl;				//無敵ゲージバー画像ハンドル
 	int Invincible_Gauge_Hndl;				//無敵ゲージ画像ハンドル
@@ -39,6 +36,7 @@ public:
 
 	Player player;
 	Enemy enemy[ENEMY_NUM];//敵の数
+	Enemy enemy2[ENEMY_NUM2];//HPが多い敵キャラ
 	int flameCount;
 	//初期化
 	void Init();

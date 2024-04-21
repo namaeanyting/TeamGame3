@@ -11,8 +11,8 @@ void Enemy::Init()
 	flameCount = 0;
 	phese = 0;
 
-	//進行方向の初期化
-	HP = ENEMY_HP_MAX;
+	////進行方向の初期化
+	//HP = ENEMY_HP_MAX;
 }
 
 //通常処理
@@ -38,7 +38,10 @@ void Enemy::Step()
 	else {
 		HP = ENEMY_HP_MAX;//HPを再所持させたい
 	}
-
+	//HP制御
+	if (HP < 0) {
+		HP = 0;
+	}
 }
 
 //描画

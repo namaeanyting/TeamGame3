@@ -6,8 +6,10 @@ const int WINDOW_H = 1280;
 const int ENEMY_SIZE_Y = 200;
 const int ENEMY_SIZE_X = 140;
 const int ENEMY_NUM = 2;
+const int ENEMY_NUM2 = 2;
 //HPの最大値
 const int ENEMY_HP_MAX = 6;
+const int ENEMY2_HP_MAX = 18;
 
 //敵の出現数
 const int ENEMY_MAX = 6;
@@ -34,7 +36,7 @@ class Enemy
 {
 private:
 	int imgHandl[ENEMY_IMEG_MAX];
-	int phese;//ノックバックの場面進行用
+	int phese;					//ノックバックの場面進行用
 public:
 	int HP;
 	int x, y;
@@ -42,22 +44,13 @@ public:
 	bool isLeft;				//true=左から来る
 
 	int flameCount;
-	//初期化
-	void Init();
-
-	//通常処理
-	void Step();
-
-	//移動
-	void Move();
-	//描画
-	void Draw();
-
-	//終了処理
-	void Fin();
-
-	//ノックバック処理
-	void KnockBack();
 	
+	void Init();//初期化
+	void Step();//通常処理
+	void Move();//移動
+	void Draw();//描画
+	void Fin();//終了処理
+	void KnockBack();//ノックバック処理
+
 };
 

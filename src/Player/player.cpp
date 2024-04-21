@@ -25,14 +25,22 @@ void Player::Init()
 	isHit = false;			//UŒ‚‚³‚ê‚½‚©‚ğ‚È‚µ‚É	
 	playerImgNum = 0;		//‚Ü‚¸‚Í—§‚¿‚ÌŠG
 	attckCount = 0;			//–³“GŠÔ
+	isDraw = true;
+	Yspeed = YSPEED;
 }
 
 //’Êíˆ—
 void Player::Step()
 {
+	//§Œä
+	if (HP < 0) {
+		HP = 0;
+	}
+
 	switch (phese)
 	{
 	case 0:
+		//HP‚ª‚È‚­‚È‚Á‚½‚ç‰ñ“]‚µ‚Äê–ÊˆÚ“®@‚¿‚å‚Á‚Æ‘z’è‚ÆˆÙ‚È‚é“®‚«‚µ‚Ä‚é
 		if (HP == 0) {
 			angle += 3;
 			if (angle == 120) {
@@ -41,47 +49,46 @@ void Player::Step()
 		}
 		break;
 	case 1:
+		//I‚í‚è‚Ìˆ—‚Ö
 		g_CurrentSceneID = SCENE_ID_FIN_PLAY;
 
 	default:
 		break;
 	}
 	
-	
-
-	////d—Í‚ğ—^‚¦‚é
-	//Yspeed += GRAVITY;
-	//if (Yspeed > YSPPED_MAX) {
-	//	Yspeed = YSPPED_MAX;
-	//}
-	//posX += Yspeed;
-
-	//if (posY <= 360) {
-	//	posY = 360;
-	//}
+	Jump();//ƒWƒƒƒ“ƒvü‚è‚Ìd—Í
 
 }
 
 //•`‰æ
 void Player::Draw()
 {
-	if(direction[1]){
-		DrawRotaGraph(posX, posY, 1.0f, angle, playerImg[playerImgNum], true, true);
-	}
-	else if (direction[3]) {
-		DrawRotaGraph(posX, posY, 1.0f, angle, playerImg[playerImgNum], true, false);
+	if(isDraw){
+		if (direction[1]) {
+			DrawRotaGraph(posX, posY, 1.0f, angle, playerImg[playerImgNum], true, true);
+		}
+		else if (direction[3]) {
+			DrawRotaGraph(posX, posY, 1.0f, angle, playerImg[playerImgNum], true, false);
+		}
 	}
 }
 
 //UŒ‚‰æ‘œw’è
 void Player::MoveImage()
-{
+{	
+	//UŒ‚ŠG‚É‚·‚é/¶Œü‚«
 	if (attacDirection[3]&& attckCount>0) {
-		playerImgNum = 1;//UŒ‚ŠG‚É‚·‚é
+		playerImgNum = 1;
 	}
+	//UŒ‚ŠG‚É‚·‚é/‰EŒü‚«
 	else if (attacDirection[1] && attckCount > 0) {
-		playerImgNum = 1;//UŒ‚ŠG‚É‚·‚é
+		playerImgNum = 1;
 	}
+	//‚µ‚á‚ª‚İŠG‚É‚·‚é
+	else if (attacDirection[2] && attckCount > 0) {
+		playerImgNum = 2;
+	}
+
 	if (attckCount == 0) {
 		playerImgNum = 0;//—§‚¿ŠG
 	}
@@ -98,20 +105,17 @@ void Player::Operation()
 	if (Input::IsKeyPush(KEY_INPUT_UP)) {
 		Yspeed = YSPEED;
 		directionSetting(0);//ƒL[•ûŒüİ’è
-		//directionAngle = 270.0f;
 	}
 
 	//‰EŒü‚­
 	if (Input::IsKeyPush(KEY_INPUT_RIGHT)) {
 		directionSetting(1);//ƒL[•ûŒüİ’è
 		direction[3] = false;
-		//directionAngle = 0.0f;
 	}
 	
 	//‚µ‚á‚ª‚Ş
 	if (Input::IsKeyPush(KEY_INPUT_DOWN)) {
 		directionSetting(2);//ƒL[•ûŒüİ’è
-		//directionAngle = 90.0f;
 	}
 
 	//¶Œü‚­
@@ -132,15 +136,32 @@ void Player::BottunInit()
 //•ûŒüİ’è
 void Player::directionSetting(int num)
 {
-	//‰Šú‰»
-	/*if (direction[num] == true) {
-		direction[num] = false;
-	}*/
-	/*if (attacDirection[num] == true) {
-		attacDirection[num] = false;
-	}*/
 	//’lƒZƒbƒg
 	direction[num] = true;
 	attacDirection[num] = true;
 }
 
+//–³“GŠÔ
+void Player::InvincibleTime(int count)
+{
+	isDraw = false; // ˆê“x•`‰æ‚³‚ê‚È‚¢
+
+	if (count % 9 < 200) {
+		isDraw = true; // •`‰æ‚³‚ê‚Ä‚¢‚é‚É‚·‚é
+	}
+}
+
+//ƒWƒƒƒ“ƒv
+void Player::Jump()
+{
+	//d—Í‚ğ—^‚¦‚é
+	Yspeed += GRAVITY;
+	if (Yspeed > YSPPED_MAX) {
+		Yspeed = YSPPED_MAX;
+	}
+	posY += Yspeed;
+
+	if (posY >= 360) {
+		posY = 360;
+	}
+}

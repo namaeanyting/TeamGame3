@@ -1,9 +1,9 @@
 #pragma once
 #include "../Scene/scene.h"
 
-#define GRAVITY			(1.5)	//重力加速度  1.5   0.25
-#define YSPEED			(10)	//-27.5  -10
-#define YSPPED_MAX		(13)
+#define GRAVITY			(1.5)	
+#define YSPEED			(-30)	
+#define YSPPED_MAX		(10)
 
 // プレイヤーの画像サイズ
 const int PLAYER_SIZE_Y = 200; 
@@ -43,36 +43,22 @@ public:
 	bool direction[4];			//プレイヤーが向いている・押しているキー
 	bool attacDirection[4];		//攻撃プレイヤーが向いている・押しているキー
 	bool isHit;					//単純に敵に攻撃したか
+	bool isDraw;				//無敵時間　攻撃され中点滅
 	int playerImgNum;			//プレイヤーの画像添え字
 	int HP;
 	int attckCount;				//腕を伸ばした数・最大３
-
-	//初期化
-	void Init();
-
-	//通常処理
-	void Step();
-
-	//描画
-	void Draw();
-
-	//終了処理
-	void Fin();
-
-	//攻撃画像指定
-	void MoveImage();
-
-	//プレイヤー操作
-	void Operation();
-
-	//ボタンの初期化/毎フレーム初期化させる
-	void BottunInit();
-
-	//方向設定
-	void directionSetting(int num);
 	
-	//座標取得
-	int GetPosX() { return posX; }
+	void Init();				//初期化
+	void Step();				//通常処理
+	void Draw();				//描画
+	void Fin();					//終了処理
+	void MoveImage();			//攻撃画像指定
+	void Operation();			//プレイヤー操作
+	void Jump();				//ジャンプ
+	void BottunInit();			//ボタンの初期化/毎フレーム初期化させる
+	void directionSetting(int num);//方向設定
+	void InvincibleTime(int count);//無敵時間
+	int GetPosX() { return posX; }//座標取得
 	int GetPosY() { return posY; }
 
 };
