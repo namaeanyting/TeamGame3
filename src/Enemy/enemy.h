@@ -1,4 +1,5 @@
 #pragma once
+#include "../Scene/scene.h"
 #define ENEMY_MAX_NUM	(5)						//弾の最大数（ハンドルの数）
 const int WINDOW_H = 1280;
 // 敵の画像サイズ

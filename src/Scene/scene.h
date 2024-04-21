@@ -23,4 +23,3 @@ enum SCENE_ID
 };
 
 extern int g_CurrentSceneID;
-extern int g_CurrentScenePlayID;

@@ -79,6 +79,8 @@ void ScenePlay::Step()
 	//当たり判定
 	PlyerToEnemyHit();
 	player.Step();
+	player.MoveImage();
+
 	
 	//スペースキーを押したら画面移動
 	if (Input::IsKeyPush(KEY_INPUT_SPACE))
@@ -91,7 +93,7 @@ void ScenePlay::Step()
 void ScenePlay::Draw()
 {
 	//背景画像
-	//DrawGraph(0, 0, imgHandl[PLAY_BACK], true);
+	DrawGraph(0, 0, imgHandl[PLAY_BACK], true);
 
 	//プレイヤー描画
 	player.Draw();
@@ -129,7 +131,7 @@ void ScenePlay::Fin()
 	//	StopSoundMem(sound.se[i]);
 	//	DeleteSoundMem(sound.se[i]);
 	//}
-
+	
 	// プレイシーンに移動
 	g_CurrentSceneID = SCENE_ID_INIT_RESULT;
 }
@@ -171,6 +173,8 @@ void ScenePlay::PlyerToEnemyHit()
 			//プレイヤーが右向いてる && 右から進行
 			if (player.attacDirection[1] && !enemy[i].isLeft) {
 				enemy[i].HP--;
+				player.attckCount++;
+
 				if (enemy[i].HP == 0) {
 					enemy[i].isActive = false;//死亡グラフを折る
 				}
