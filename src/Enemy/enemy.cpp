@@ -42,6 +42,8 @@ void Enemy::Step()
 	if (HP < 0) {
 		HP = 0;
 	}
+
+	
 }
 
 //描画
@@ -49,7 +51,9 @@ void Enemy::Draw()
 {
 	if (isActive) {
 		DrawRotaGraph(x, y, 1.0f, 0.0f, imgHandl[ENEMY_ENEMY1], true);
+		/*DrawBox(x - 70, y - 100, x + 70, y + 100, GetColor(255, 255, 255), false);*/
 	}
+	
 }
 
 //ノックバック処理

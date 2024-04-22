@@ -19,6 +19,8 @@ const char PLAY_IMAGE_PATH[PLAY_IMEG_MAX][255] =
 #define INVINCIBLE_BAR		"data/play/bar.png"		//無敵ゲージバー
 #define INVINCIBLE_GAUGE	"data/play/ゲージ.png"	//無敵ゲージ
 
+#define KNIFE_PATH		"data/play/ナイフ.png"
+
 class ScenePlay
 {
 private:
@@ -29,8 +31,13 @@ private:
 	int Invincible_Gauge_Hndl;				//無敵ゲージ画像ハンドル
 
 	bool Invincible;				//無敵フラグ
-	int Invincible_Time;			//無敵時間変数
+	float Invincible_Time;			//無敵時間変数
 	int Fox_Count;					//きつねを倒した時のカウント
+
+	int KnifeHndl;
+	int Knife_x, Knife_y;
+	bool knife;
+	float Knife_Count;
 	
 public:
 

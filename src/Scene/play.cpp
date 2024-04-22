@@ -13,6 +13,13 @@ void ScenePlay::Init()
 		imgHandl[i] = LoadGraph(PLAY_IMAGE_PATH[i]);
 	}
 
+	KnifeHndl = LoadGraph(KNIFE_PATH);
+
+	Knife_x = -50;
+	Knife_y = 300;
+	Knife_Count = 0.0f;
+	knife = false;
+
 	//あたった時のカウント初期化
 	for (int i = 0; i < ENEMY_NUM; i++)
 	{
@@ -43,7 +50,7 @@ void ScenePlay::Init()
 	//無敵フラグ
 	Invincible = false;
 	//無敵時間
-	Invincible_Time = 5;
+	Invincible_Time = 0.0f;
 	//きつねを倒したカウント
 	Fox_Count = 0;
 
@@ -54,6 +61,7 @@ void ScenePlay::Init()
 void ScenePlay::Step()
 {
 	flameCount++;
+	
 	//毎フレーム攻撃ボタンをfalseに
 	player.BottunInit();
 
@@ -66,6 +74,26 @@ void ScenePlay::Step()
 	for (int i = 0; i < ENEMY_NUM; i++)
 	{
 		enemy[i].Step();
+	}
+
+	Knife_Count++;
+	if (Knife_Count == 300.0f)
+	{
+		if (knife == false)
+		{
+			Knife_x = 1300;
+			knife = true;
+		}
+	}
+	
+	if (knife == true)
+	{
+		Knife_x -= 6;
+		if (Knife_x < -110)
+		{
+			knife = false;
+			Knife_Count = 0.0f;
+		}
 	}
 
 	//敵のリスポーン
@@ -81,16 +109,32 @@ void ScenePlay::Step()
 	{
 		g_CurrentSceneID = SCENE_ID_FIN_PLAY;
 	}
+	//無敵フラグがtrueの時無敵タイムを減らす
+	if (Invincible == true)
+	{
+		if (flameCount % 50 == 0)
+		{
+			Invincible_Time -= 1.0f;
+			if (Invincible_Time <= 0.0f)
+			{
+				Invincible = false;
+				Fox_Count = 0;
+			}
+		}
+		
+	}
 }
 
 // タイトル描画処理
 void ScenePlay::Draw()
 {
 	//背景画像
-	//DrawGraph(0, 0, imgHandl[PLAY_BACK], true);
+	DrawGraph(0, 0, imgHandl[PLAY_BACK], true);
 
 	//プレイヤー描画
 	player.Draw();
+
+	DrawGraph(Knife_x, Knife_y, KnifeHndl, true);
 
 	//敵描画
 	for (int i = 0; i < ENEMY_NUM; i++)
@@ -114,6 +158,9 @@ void ScenePlay::Draw()
 	DrawFormatString(0, 220, GetColor(255, 255, 255), "y:%d", player.GetPosY());
 	DrawFormatString(0, 40, GetColor(255, 255, 255), "カウント:%d", HitCount[0][0]);
 	DrawFormatString(0, 60, GetColor(255, 255, 255), "カウント:%d", HitCount[0][1]);
+	DrawFormatString(0, 240, GetColor(255, 255, 255), "カウント:%d", Fox_Count);
+	DrawFormatString(0, 260, GetColor(255, 255, 255), "秒:%f", Invincible_Time);
+	DrawFormatString(0, 280, GetColor(255, 255, 255), "ナイフカウント:%f", Knife_Count);
 
 }
 
@@ -139,64 +186,105 @@ void ScenePlay::PlyerToEnemyHit()
 	for (int i = 0; i < ENEMY_NUM; i++)
 	{
 		//左--------------------------------------------------------------
-		if (IsHitRect(enemy[i].x, enemy[i].y, ENEMY_SIZE_X, ENEMY_SIZE_Y,
-			(WINDOW_WIDTH/2) - (PLAYER_SIZE_X/2), (WINDOW_HEIGHT/2)- (ENEMY_SIZE_Y/2), PLAYER_SIZE_X, PLAYER_SIZE_Y))
-		{
-			//攻撃されてから時間をカウント
-			HitCount[i][0]++;
+			if (IsHitRect(enemy[i].x, enemy[i].y, ENEMY_SIZE_X, ENEMY_SIZE_Y,
+				(WINDOW_WIDTH / 2) - (PLAYER_SIZE_X / 2), (WINDOW_HEIGHT / 2) - (ENEMY_SIZE_Y / 2), PLAYER_SIZE_X, PLAYER_SIZE_Y))
+			{
+				//攻撃されてから時間をカウント
+				HitCount[i][0]++;
 
-			//プレイヤーが左向いて攻撃 && 敵左から進行
-			if (player.attacDirection[3] && enemy[i].isLeft) {
-				enemy[i].HP--;
-				player.attckCount++;
-				
-				if (enemy[i].HP == 0) {
-					enemy[i].isActive = false;//死亡グラフを折る
+				//プレイヤーが左向いて攻撃 && 敵左から進行
+				if (player.attacDirection[3] && enemy[i].isLeft) {
+					enemy[i].HP--;
+					player.attckCount++;
+
+					if (enemy[i].HP == 0) {
+						/*Fox_Count = 10;*/
+						Fox_Count++;
+						enemy[i].isActive = false;//死亡グラフを折る
+					}
 				}
-			}
-			else if (HitCount[i][0] > ATTACK_WAITE_TIME) {
-				player.HP--;			//200の時だけダメージを与える
-				HitCount[i][0] = 0;		//ダメージを与えたらまた0に戻し、カウントを頭からにする
-			}
-			DrawFormatString(0, 420, GetColor(255, 255, 255), "左hit");
+				else if (HitCount[i][0] > ATTACK_WAITE_TIME) {
+					if (Invincible == true)
+					{
+						break;
+					}
+					else
+					{
+						player.HP--;			//200の時だけダメージを与える
+						HitCount[i][0] = 0;		//ダメージを与えたらまた0に戻し、カウントを頭からにする
+					}
+					
+				}
+				if (Fox_Count == 10)
+				{
+					Invincible = true;
+					Invincible_Time = 10.0f;
+				}
+				DrawFormatString(0, 420, GetColor(255, 255, 255), "左hit");
 
-		}
-		//当たってないなら
-		else {
-			HitCount[i][0] = 0;
-		}
+			}
+			//当たってないなら
+			else {
+				HitCount[i][0] = 0;
+			}
+		
 
 		//右--------------------------------------------------------------
-		if (IsHitRect(enemy[i].x, enemy[i].y, ENEMY_SIZE_X, ENEMY_SIZE_Y,
-			(WINDOW_WIDTH / 2) + (PLAYER_SIZE_X / 2), (WINDOW_HEIGHT / 2) - (ENEMY_SIZE_Y / 2), PLAYER_SIZE_X, PLAYER_SIZE_Y))
-		{
-			//攻撃されてから時間をカウント
-			HitCount[i][1]++;
-			//プレイヤーが右向いてる && 右から進行
-			if (player.attacDirection[1] && !enemy[i].isLeft) {
-				enemy[i].HP--;
-				player.attckCount++;
+			if (IsHitRect(enemy[i].x, enemy[i].y, ENEMY_SIZE_X, ENEMY_SIZE_Y,
+				(WINDOW_WIDTH / 2) + (PLAYER_SIZE_X / 2), (WINDOW_HEIGHT / 2) - (ENEMY_SIZE_Y / 2), PLAYER_SIZE_X, PLAYER_SIZE_Y))
+			{
+				//攻撃されてから時間をカウント
+				HitCount[i][1]++;
+				//プレイヤーが右向いてる && 右から進行
+				if (player.attacDirection[1] && !enemy[i].isLeft) {
+					enemy[i].HP--;
+					player.attckCount++;
 
-				if (enemy[i].HP == 0) {
-					enemy[i].isActive = false;//死亡グラフを折る
+					if (enemy[i].HP == 0) {
+						//Fox_Count = 10;
+						Fox_Count++;
+						enemy[i].isActive = false;//死亡グラフを折る
+					}
+					
 				}
+				else if (HitCount[i][1] > ATTACK_WAITE_TIME) {
+					if (Invincible == true)
+					{
+						break;
+					}
+					else
+					{
+						player.HP--;			//200の時だけダメージを与える
+						HitCount[i][1] = 0;		//ダメージを与えたらまた0に戻し、カウントを頭からにする
+					}
+				}
+				if (Fox_Count == 10)
+				{
+					Invincible = true;
+					Invincible_Time = 10.0f;
+				}
+				////デバッグ用
+				DrawFormatString(0, 440, GetColor(255, 255, 255), "右hit");
+				//DrawFormatString(0, 40, GetColor(255, 255, 255), "カウント:%d", HitCount[0]);
+				//DrawFormatString(0, 60, GetColor(255, 255, 255), "カウント:%d", HitCount[1]);
 			}
-			else if (HitCount[i][1] > ATTACK_WAITE_TIME) {
-				player.HP--;			//200の時だけダメージを与える
-				HitCount[i][1] = 0;		//ダメージを与えたらまた0に戻し、カウントを頭からにする
+			//当たってないなら
+			else {
+				HitCount[i][1] = 0;
 			}
+			
+	}
 
-			////デバッグ用
-			DrawFormatString(0, 440, GetColor(255, 255, 255), "右hit");
-			//DrawFormatString(0, 40, GetColor(255, 255, 255), "カウント:%d", HitCount[0]);
-			//DrawFormatString(0, 60, GetColor(255, 255, 255), "カウント:%d", HitCount[1]);
-		}
-		//当たってないなら
-		else {
-			HitCount[i][1] = 0;
+	if (knife == true)
+		{
+			if (IsHitRect(Knife_x, Knife_y, 35, 35, player.GetPosX() - 70, player.GetPosY() - 100, 140, 100))
+			{
+				player.HP--;
+				knife = false;
+				Knife_Count = 0.0f;
+			}
 		}
 	}
-}
 
 //ランダム生成
 void ScenePlay::EnemyGeneration(int enemyNum) {
@@ -237,11 +325,11 @@ void ScenePlay::DrawInvincibleGauge()
 	//無敵ゲージを増やす描画
 	if (Invincible == false)
 	{
-		DrawRectGraph(100, 100, 0, 0, 10 * Fox_Count, 100, Invincible_Gauge_Hndl, true, false);
+		DrawRectGraph(100, 100, 0, 0, 40 * Fox_Count, 100, Invincible_Gauge_Hndl, true, false);
 	}
 	//無敵だった場合、ゲージを減らす描画
 	else
 	{
-		DrawRectGraph(100, 100, 0, 0, 20 * Invincible_Time, 100, Invincible_Gauge_Hndl, true, false);
+		DrawRectGraph(100, 100, 0, 0, 80 * Invincible_Time, 100, Invincible_Gauge_Hndl, true, false);
 	}
 }

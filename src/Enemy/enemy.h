@@ -32,6 +32,8 @@ const char ENEMY_IMAGE_PATH[ENEMY_IMEG_MAX][255] =
 	"data/play/4.png",			//
 };
 
+
+
 class Enemy
 {
 private:
@@ -40,9 +42,9 @@ private:
 public:
 	int HP;
 	int x, y;
+	
 	bool isActive;
 	bool isLeft;				//true=¶‚©‚ç—ˆ‚é
-
 	int flameCount;
 	
 	void Init();//‰Šú‰»
