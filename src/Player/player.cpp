@@ -12,10 +12,16 @@ void Player::Init()
 	LoadDivGraph(PLAYER_IMG, 3,3,1,140,200,playerImg);
 	//基本変数の初期化
 	angle = 0.0f;
+	//座標
 	posX = 640;
 	posY = 360;
+	collisionPosX = posX;
+	collisionPosY = posY - 35;
+	//HP設定
 	HP = PLAYER_HP_MAX;
+	//シーン
 	phese = 0;
+	//方向
 	for (int i = 0; i < 4; i++) {
 		attacDirection[i] = false;
 	}
@@ -104,6 +110,8 @@ void Player::Operation()
 	//上にジャンプしたい
 	if (Input::IsKeyPush(KEY_INPUT_UP)) {
 		Yspeed = YSPEED;
+		collsionYspeed = YSPEED;//当たり判定用
+
 		directionSetting(0);//キー方向設定
 	}
 
@@ -164,4 +172,16 @@ void Player::Jump()
 	if (posY >= 360) {
 		posY = 360;
 	}
+	
+	//当たり判定重力を与える
+	collsionYspeed += GRAVITY;
+	if (collsionYspeed > YSPPED_MAX) {
+		collsionYspeed = YSPPED_MAX;
+	}
+	collisionPosY += collsionYspeed;
+
+	if (collisionPosY >= 360) {
+		collisionPosY = 360;
+	}
+
 }

@@ -39,6 +39,8 @@ private:
 	int playerImg[3];
 	int phese;			//本編進行
 	int Yspeed;			//ジャンプ
+	int collsionYspeed;			//ジャンプ
+
 public:
 	bool direction[4];			//プレイヤーが向いている・押しているキー
 	bool attacDirection[4];		//攻撃プレイヤーが向いている・押しているキー
@@ -47,7 +49,9 @@ public:
 	int playerImgNum;			//プレイヤーの画像添え字
 	int HP;
 	int attckCount;				//腕を伸ばした数・最大３
-	
+	int collisionPosX;			//当たり判定用の座標
+	int collisionPosY;
+
 	void Init();				//初期化
 	void Step();				//通常処理
 	void Draw();				//描画

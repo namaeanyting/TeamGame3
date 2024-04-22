@@ -24,9 +24,6 @@ private:
 	int nameHandl;
 public:
 
-	SceneTitle();
-	~SceneTitle();
-
 	//‰Šú‰»
 	void Init();
 

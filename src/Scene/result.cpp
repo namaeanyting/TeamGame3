@@ -13,12 +13,10 @@ void SceneResult::Init()
 	{
 		imgHandl[i] = LoadGraph(RESULT_IMAGE_PATH[i]);
 	}
-	//キーの初期化
-	//Input::Init();
 
 	//BGM
-	//sound.bgm[BGM_ED] = LoadSoundMem("data/Sound/resulr.mp3");//OP
-	//PlaySoundMem(sound.bgm[BGM_ED], DX_PLAYTYPE_LOOP, true);
+	Sound::BGM::PlayButton(BGM_RESULT);
+	Sound::BGM::Volume(BGM_RESULT, 50);
 
 	//通常処理へ移動
 	g_CurrentSceneID = SCENE_ID_LOOP_RESULT;
@@ -28,8 +26,8 @@ void SceneResult::Init()
 // 通常処理
 void SceneResult::Step()
 {
-	//キー
-	Input::Step();
+	////キー
+	//Input::Step();
 
 	//スペースキーを離したら画面移動
 	if (Input::IsKeyPush(KEY_INPUT_SPACE))
@@ -48,8 +46,8 @@ void SceneResult::Draw()
 void SceneResult::Fin()
 {
 	//BGMの削除
-	//StopSoundMem(sound.bgm[BGM_ED]);
-	//DeleteSoundMem(sound.bgm[BGM_ED]);
+	Sound::BGM::StopDelButton(BGM_RESULT);
+
 
 	//タイトル移動
 	g_CurrentSceneID = SCENE_ID_INIT_TITLE;

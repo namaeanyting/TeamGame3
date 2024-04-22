@@ -5,8 +5,9 @@
 #include"Scene/Title.h"
 #include"Scene/Play.h"
 #include"Scene/Result.h"
+#include"Input/Input.h"
 
-int g_CurrentSceneID = SCENE_ID_INIT_PLAY;
+int g_CurrentSceneID = SCENE_ID_INIT_TITLE;
 
 // Win32アプリケーションは WinMain関数 から始まる
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
@@ -32,6 +33,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	ScenePlay play;
 	SceneResult result;
 
+	Sound::Init();
+	Input::Init();
 	//-----------------------------------------
 
 	//ゲームメインループ
@@ -45,7 +48,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		//画面に表示されたものを初期化
 		ClearDrawScreen();
-		
+		//入力処理通常処理
+		Input::Step();
 		switch (g_CurrentSceneID)
 		{
 

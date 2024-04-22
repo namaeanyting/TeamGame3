@@ -1,6 +1,8 @@
 #pragma once
 #include "../Player/player.h"
 #include "../Enemy/enemy.h"
+#include "../Enemy/enemy2.h"
+
 #define ATTACK_WAITE_TIME  75
 //画像を使うときの名前
 enum PLAY_IMAGE
@@ -43,8 +45,11 @@ public:
 
 	Player player;
 	Enemy enemy[ENEMY_NUM];//敵の数
-	Enemy enemy2[ENEMY_NUM2];//HPが多い敵キャラ
+	Enemy2 enemy2[ENEMY_NUM2];//HPが多い敵キャラ
+	
 	int flameCount;
+	int flameCountEne2;		//敵２用
+
 	//初期化
 	void Init();
 
@@ -58,8 +63,8 @@ public:
 	void Fin();
 	//プレイヤーと敵当たり判定
 	void PlyerToEnemyHit();
-	//ランダム生成
-	void EnemyGeneration(int enemyNum);
+	void PlyerToEnemy2Hit();
+
 	//敵のよみがえり設定
 	void Respawn();
 	//HPの制御

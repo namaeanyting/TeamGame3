@@ -6,7 +6,9 @@
 
 //タイトルの初期化
 void ScenePlay::Init()
-{
+{	
+	flameCount = 0;
+
 	//画像読み込み
 	for (int i = 0; i < PLAY_IMEG_MAX; i++)
 	{
@@ -32,16 +34,21 @@ void ScenePlay::Init()
 	for (int i = 0; i < ENEMY_NUM; i++)
 	{
 		enemy[i].Init();
-		//進行方向の初期化
 		enemy[i].HP = ENEMY_HP_MAX;
-	}
-	flameCount = 0;
+		enemy[i].EnemyGeneration();//ランダムに生成
 
-	//ランダムに生成
-	for (int i = 0; i < ENEMY_NUM; i++)
-	{
-		EnemyGeneration(i);
 	}
+	for (int i = 0; i < ENEMY_NUM2; i++)
+	{
+		enemy2[i].Init();
+		enemy2[i].HP = ENEMY_HP_MAX;
+		enemy2[i].EnemyGeneration();
+	}
+	
+	//BGM
+	Sound::BGM::PlayButton(BGM_PLAY);
+	Sound::BGM::Volume(BGM_PLAY, 50);
+
 	
 	//無敵ゲージバー画像読み込み
 	Invincible_Bar_Hndl = LoadGraph(INVINCIBLE_BAR);
@@ -50,7 +57,7 @@ void ScenePlay::Init()
 	//無敵フラグ
 	Invincible = false;
 	//無敵時間
-	Invincible_Time = 0.0f;
+	Invincible_Time = 5.0f;
 	//きつねを倒したカウント
 	Fox_Count = 0;
 
@@ -61,12 +68,13 @@ void ScenePlay::Init()
 void ScenePlay::Step()
 {
 	flameCount++;
-	
+	flameCountEne2++;
+
 	//毎フレーム攻撃ボタンをfalseに
 	player.BottunInit();
 
-	//キー
-	Input::Step();
+	////キー
+	//Input::Step();
 	//操作
 	player.Operation();
 
@@ -75,7 +83,10 @@ void ScenePlay::Step()
 	{
 		enemy[i].Step();
 	}
-
+	for (int i = 0; i < ENEMY_NUM2; i++)
+	{
+		enemy2[i].Step();
+	}
 	Knife_Count++;
 	if (Knife_Count == 300.0f)
 	{
@@ -101,6 +112,7 @@ void ScenePlay::Step()
 
 	//当たり判定
 	PlyerToEnemyHit();
+	PlyerToEnemy2Hit();
 	player.Step();
 	player.MoveImage();
 	
@@ -141,40 +153,41 @@ void ScenePlay::Draw()
 	{
 		enemy[i].Draw();
 	}
-
+	for (int i = 0; i < ENEMY_NUM2; i++)
+	{
+		enemy2[i].Draw();
+	}
 	//無敵関連描画
 	DrawInvincibleGauge();
 
-	//デバッグ用
-	DrawFormatString(0, 0, GetColor(255, 255, 255), "flame:%d", flameCount);
-	DrawFormatString(0, 20, GetColor(255, 255, 255), "playerHP:%d",player.HP);
-	for (int i = 0; i < ENEMY_NUM; i++){
-		DrawFormatString(0, 80+i*20, GetColor(255, 255, 255), "enemyHP:%d", enemy[i].HP);
-	}
-	//座標
-	DrawFormatString(0, 160, GetColor(255, 255, 255), "敵0のx:%d", enemy[0].x);
-	DrawFormatString(0, 180, GetColor(255, 255, 255), "敵1のx:%d", enemy[1].x);
-	DrawFormatString(0, 200, GetColor(255, 255, 255), "敵2のx:%d", enemy[2].x);
-	DrawFormatString(0, 220, GetColor(255, 255, 255), "y:%d", player.GetPosY());
-	DrawFormatString(0, 40, GetColor(255, 255, 255), "カウント:%d", HitCount[0][0]);
-	DrawFormatString(0, 60, GetColor(255, 255, 255), "カウント:%d", HitCount[0][1]);
-	DrawFormatString(0, 240, GetColor(255, 255, 255), "カウント:%d", Fox_Count);
-	DrawFormatString(0, 260, GetColor(255, 255, 255), "秒:%f", Invincible_Time);
-	DrawFormatString(0, 280, GetColor(255, 255, 255), "ナイフカウント:%f", Knife_Count);
+	////デバッグ用
+	//DrawFormatString(0, 0, GetColor(255, 255, 255), "flame:%d", flameCount);
+	//DrawFormatString(0, 20, GetColor(255, 255, 255), "playerHP:%d",player.HP);
+	//for (int i = 0; i < ENEMY_NUM; i++){
+	//	DrawFormatString(0, 80+i*20, GetColor(255, 255, 255), "enemyHP:%d", enemy[i].HP);
+	//}
+	////座標
+	//DrawFormatString(0, 160, GetColor(255, 255, 255), "敵0のx:%d", enemy[0].x);
+	//DrawFormatString(0, 180, GetColor(255, 255, 255), "敵1のx:%d", enemy[1].x);
+	//DrawFormatString(0, 200, GetColor(255, 255, 255), "敵2のx:%d", enemy[2].x);
+	//DrawFormatString(0, 220, GetColor(255, 255, 255), "y:%d", player.GetPosY());
+	//DrawFormatString(0, 40, GetColor(255, 255, 255), "カウント:%d", HitCount[0][0]);
+	//DrawFormatString(0, 60, GetColor(255, 255, 255), "カウント:%d", HitCount[0][1]);
+	//DrawFormatString(0, 240, GetColor(255, 255, 255), "カウント:%d", Fox_Count);
+	//DrawFormatString(0, 260, GetColor(255, 255, 255), "秒:%f", Invincible_Time);
+	//DrawFormatString(0, 280, GetColor(255, 255, 255), "ナイフカウント:%f", Knife_Count);
+	//DrawBox(player.collisionPosX - 140, player.collisionPosY, player.collisionPosX - 140 + (PLAYER_SIZE_X / 2), player.collisionPosY +( PLAYER_SIZE_Y / 2), GetColor(255, 255, 255), true);
+	//DrawBox(player.collisionPosX + 80, player.collisionPosY, player.collisionPosX + 80 +( PLAYER_SIZE_X / 2), player.collisionPosY + (PLAYER_SIZE_Y / 2), GetColor(255, 255, 255), true);
 
 }
 
 // タイトル終了処理
 void ScenePlay::Fin()
 {
-	////BGMの削除
-	//StopSoundMem(sound.bgm[BGM_PLAY]);
-	//DeleteSoundMem(sound.bgm[BGM_PLAY]);
-	////SEの削除
-	//for (int i = 0; i < ALL_SOUND; i++) {
-	//	StopSoundMem(sound.se[i]);
-	//	DeleteSoundMem(sound.se[i]);
-	//}
+	//BGMの削除
+	Sound::BGM::StopDelButton(BGM_TITLE);
+	Sound::BGM::StopDelButton(SE_PUNCH);
+	Sound::BGM::StopDelButton(SE_MONSTER);
 	
 	// プレイシーンに移動
 	g_CurrentSceneID = SCENE_ID_INIT_RESULT;
@@ -187,7 +200,7 @@ void ScenePlay::PlyerToEnemyHit()
 	{
 		//左--------------------------------------------------------------
 			if (IsHitRect(enemy[i].x, enemy[i].y, ENEMY_SIZE_X, ENEMY_SIZE_Y,
-				(WINDOW_WIDTH / 2) - (PLAYER_SIZE_X / 2), (WINDOW_HEIGHT / 2) - (ENEMY_SIZE_Y / 2), PLAYER_SIZE_X, PLAYER_SIZE_Y))
+				player.collisionPosX - 80, player.collisionPosY, PLAYER_SIZE_X / 2, PLAYER_SIZE_Y / 2))
 			{
 				//攻撃されてから時間をカウント
 				HitCount[i][0]++;
@@ -196,11 +209,13 @@ void ScenePlay::PlyerToEnemyHit()
 				if (player.attacDirection[3] && enemy[i].isLeft) {
 					enemy[i].HP--;
 					player.attckCount++;
-
+					Sound::SE::PlayButton(SE_PUNCH);
+					
 					if (enemy[i].HP == 0) {
 						/*Fox_Count = 10;*/
 						Fox_Count++;
 						enemy[i].isActive = false;//死亡グラフを折る
+						Sound::SE::PlayButton(SE_MONSTER);
 					}
 				}
 				else if (HitCount[i][0] > ATTACK_WAITE_TIME) {
@@ -220,7 +235,7 @@ void ScenePlay::PlyerToEnemyHit()
 					Invincible = true;
 					Invincible_Time = 10.0f;
 				}
-				DrawFormatString(0, 420, GetColor(255, 255, 255), "左hit");
+				//DrawFormatString(0, 420, GetColor(255, 255, 255), "左hit");
 
 			}
 			//当たってないなら
@@ -231,7 +246,7 @@ void ScenePlay::PlyerToEnemyHit()
 
 		//右--------------------------------------------------------------
 			if (IsHitRect(enemy[i].x, enemy[i].y, ENEMY_SIZE_X, ENEMY_SIZE_Y,
-				(WINDOW_WIDTH / 2) + (PLAYER_SIZE_X / 2), (WINDOW_HEIGHT / 2) - (ENEMY_SIZE_Y / 2), PLAYER_SIZE_X, PLAYER_SIZE_Y))
+				player.collisionPosX + 80, player.collisionPosY, PLAYER_SIZE_X / 2, PLAYER_SIZE_Y / 2))
 			{
 				//攻撃されてから時間をカウント
 				HitCount[i][1]++;
@@ -239,11 +254,14 @@ void ScenePlay::PlyerToEnemyHit()
 				if (player.attacDirection[1] && !enemy[i].isLeft) {
 					enemy[i].HP--;
 					player.attckCount++;
+					Sound::SE::PlayButton(SE_PUNCH);
 
 					if (enemy[i].HP == 0) {
 						//Fox_Count = 10;
 						Fox_Count++;
 						enemy[i].isActive = false;//死亡グラフを折る
+						Sound::SE::PlayButton(SE_MONSTER);
+
 					}
 					
 				}
@@ -264,7 +282,7 @@ void ScenePlay::PlyerToEnemyHit()
 					Invincible_Time = 10.0f;
 				}
 				////デバッグ用
-				DrawFormatString(0, 440, GetColor(255, 255, 255), "右hit");
+			//	DrawFormatString(0, 440, GetColor(255, 255, 255), "右hit");
 				//DrawFormatString(0, 40, GetColor(255, 255, 255), "カウント:%d", HitCount[0]);
 				//DrawFormatString(0, 60, GetColor(255, 255, 255), "カウント:%d", HitCount[1]);
 			}
@@ -286,19 +304,79 @@ void ScenePlay::PlyerToEnemyHit()
 		}
 	}
 
-//ランダム生成
-void ScenePlay::EnemyGeneration(int enemyNum) {
-	if (GetRand(1) == 0) {
-		enemy[enemyNum].x = 0;
-		enemy[enemyNum].y = 360;
-		enemy[enemyNum].isLeft = true;
-	}
-	else {
-		enemy[enemyNum].x = 1280;
-		enemy[enemyNum].y = 360;
-		enemy[enemyNum].isLeft = false;
+	//プレイヤーと敵2当たり判定
+void ScenePlay::PlyerToEnemy2Hit()
+{
+	for (int i = 0; i < ENEMY_NUM2; i++)
+	{
+		//左--------------------------------------------------------------
+		if (IsHitRect(enemy2[i].x, enemy2[i].y, ENEMY_SIZE_X, ENEMY_SIZE_Y,
+			(WINDOW_WIDTH / 2) - (PLAYER_SIZE_X / 2), (WINDOW_HEIGHT / 2) - (ENEMY_SIZE_Y / 2), PLAYER_SIZE_X, PLAYER_SIZE_Y))
+		{
+			//攻撃されてから時間をカウント
+			HitCount[i][0]++;
+
+			//プレイヤーが左向いて攻撃 && 敵左から進行
+			if (player.attacDirection[3] && enemy2[i].isLeft) {
+				enemy2[i].HP--;
+				player.attckCount++;
+				Sound::SE::PlayButton(SE_PUNCH);
+
+				if (enemy2[i].HP == 0) {
+					enemy2[i].isActive = false;//死亡グラフを折る
+					Fox_Count++;				//倒した数
+					Sound::SE::PlayButton(SE_MONSTER);
+
+				}
+			}
+			else if (HitCount[i][0] > ATTACK_WAITE_TIME) {
+				player.HP--;			//200の時だけダメージを与える
+				HitCount[i][0] = 0;		//ダメージを与えたらまた0に戻し、カウントを頭からにする
+			}
+			//DrawFormatString(0, 420, GetColor(255, 255, 255), "左hit");
+
+		}
+		//当たってないなら
+		else {
+			HitCount[i][0] = 0;
+		}
+
+		//右--------------------------------------------------------------
+		if (IsHitRect(enemy2[i].x, enemy2[i].y, ENEMY_SIZE_X, ENEMY_SIZE_Y,
+			(WINDOW_WIDTH / 2) + (PLAYER_SIZE_X / 2), (WINDOW_HEIGHT / 2) - (ENEMY_SIZE_Y / 2), PLAYER_SIZE_X, PLAYER_SIZE_Y))
+		{
+			//攻撃されてから時間をカウント
+			HitCount[i][1]++;
+			//プレイヤーが右向いてる && 右から進行
+			if (player.attacDirection[1] && !enemy2[i].isLeft) {
+				enemy2[i].HP--;
+				player.attckCount++;
+				Sound::SE::PlayButton(SE_PUNCH);
+
+				if (enemy2[i].HP == 0) {
+					enemy2[i].isActive = false;	//死亡グラフを折る
+					Fox_Count++;				//倒した数
+					Sound::SE::PlayButton(SE_MONSTER);
+
+				}
+			}
+			else if (HitCount[i][1] > ATTACK_WAITE_TIME) {
+				player.HP--;			//200の時だけダメージを与える
+				HitCount[i][1] = 0;		//ダメージを与えたらまた0に戻し、カウントを頭からにする
+			}
+
+			////デバッグ用
+			//DrawFormatString(0, 440, GetColor(255, 255, 255), "右hit");
+			//DrawFormatString(0, 40, GetColor(255, 255, 255), "カウント:%d", HitCount[0]);
+			//DrawFormatString(0, 60, GetColor(255, 255, 255), "カウント:%d", HitCount[1]);
+		}
+		//当たってないなら
+		else {
+			HitCount[i][1] = 0;
+		}
 	}
 }
+
 
 //敵のよみがえり設定
 void ScenePlay::Respawn()
@@ -308,9 +386,21 @@ void ScenePlay::Respawn()
 		{
 			if (!enemy[i].isActive) {
 
-				EnemyGeneration(i);
+				enemy[i].EnemyGeneration();
 				enemy[i].isActive = true;
 				flameCount = 0;
+			}
+		}
+	}
+
+	if (flameCountEne2 >= 80) {
+		for (int i = 0; i < ENEMY_NUM2; i++)
+		{
+			if (!enemy2[i].isActive) {
+
+				enemy2[i].EnemyGeneration();
+				enemy2[i].isActive = true;
+				flameCountEne2 = 0;
 			}
 		}
 	}

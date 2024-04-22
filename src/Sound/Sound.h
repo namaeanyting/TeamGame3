@@ -7,25 +7,14 @@ enum BGM_TYPE
 	BGM_RESULT,
 	BGM_MAX,
 };
-
-//BGMのパス
-char BGMPath[BGM_MAX][255] =
-{
-
-};
-
 enum SE_TYPE
 {
-	SE_TITLE,
+	SE_PUNCH,
+	SE_MONSTER,
+	/*SE_TITLE,
 	SE_PLAY,
-	SE_RESULT,
+	SE_RESULT,*/
 	SE_MAX,
-};
-
-//SEのパス
-char SEPath[SE_MAX][255] =
-{
-
 };
 
 class Sound
@@ -33,10 +22,6 @@ class Sound
 public:
 	//初期化
 	static void Init();
-	//再生
-	static void PlayButton(int nameType);
-	//停止と削除
-	static void StopDelButton(int nameType);
 
 	class BGM
 	{
@@ -50,6 +35,8 @@ public:
 		static void PlayButton(int nameType);
 		//停止と削除
 		static void StopDelButton(int nameType);
+		//音量調節
+		static void Volume(int type, int volume);
 	};
 
 	class SE
@@ -65,6 +52,8 @@ public:
 		static void PlayButton(int nameType);
 		//停止と削除
 		static void StopDelButton(int nameType);
+		//音量調節
+		static void Volume(int type, int volume);
 
 	};
 };
